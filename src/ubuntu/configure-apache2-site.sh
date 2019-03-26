@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Run "./configure-apache2-site example.local /path/to/webroot /path/to/source /public/to/symbolic"
+# ./configure-apache2-site example.local /path/to/webroot /path/to/source /public/to/symbolic
 
 HOST=$1
 ROOT=$2
@@ -48,6 +48,11 @@ echo "$CONTENT" > "/etc/apache2/sites-available/${HOST}.conf"
 if [ ! -f "/etc/apache2/sites-enabled/${HOST}.conf" ];
 then
     a2ensite $HOST
+
+    systemctl apache2 reload
 fi
 
-ln --symbolic --force "$SOURCE" "$SYMBOLIC"
+if [ -d "$SOURCE" ] && [ "$SYMBOLIC" != "" ];
+then
+  ln --symbolic --force "$SOURCE" "$SYMBOLIC"
+fi
